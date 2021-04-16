@@ -1,6 +1,8 @@
-import 'package:clima/services/location.dart';
+import 'package:clima/screens/location_screen.dart';
+import 'package:clima/services/weather.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class LoadingScreen extends StatefulWidget {
   @override
@@ -9,29 +11,28 @@ class LoadingScreen extends StatefulWidget {
 
 class _LoadingScreenState extends State<LoadingScreen> {
 
-  void getLocation()async{
-    Location location=Location();
-    await location.getCurrentLocation();
-    print(location.latitude);
-    print(location.longitude);
+
+  void getLocationData()async{
+    var weatherData=await WeatherModel().getLocationWeather();
+    Navigator.push(context, MaterialPageRoute(builder: (context){
+      return LocationScreen(locationWeather: weatherData,);
+    }));
   }
 
-  void getData()async{
-    print("first");
-    Response response = await get('https://worldtimeapi.org/api/timezone/Africa/Nairobi');
-    print("end");
-    print(response.body);
-  }
   @override
   void initState() {
-    getLocation();
-    getData();
+    getLocationData();
     super.initState();
   }
   @override
   Widget build(BuildContext context) {
-
     return Scaffold(
+      body: Center(
+        child: SpinKitDoubleBounce(
+          color: Colors.white,
+          size: 100.0,
+        ),
+      ),
     );
   }
 }
